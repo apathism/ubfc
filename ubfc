@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [[ -z "$2" ]]; then
+    echo "ubfc: unspecified file name or destination executable. Aborted."
+    exit 7
+fi
+
+DEBUG=""
+if [[ "$3" == "debug" ]]; then
+    DEBUG="-DBF_DEBUG=1"
+fi
+
+ubfc_gc < "$1" > "$1.cpp" || exit 7
+cat "/usr/share/ubfc/template.c" >> "$1.cpp" || exit 7
+gcc $DEBUG -O3 -o "$2" "$1.cpp" || exit 7
+rm -f "$1.cpp"
